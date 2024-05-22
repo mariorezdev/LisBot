@@ -8,12 +8,14 @@
     <packaging>jar</packaging>
 
     <name>lisbot-web</name>
-    <url>http://maven.apache.org</url>
+    <url>https://github.com/mariorezdev/lisbot-web</url>
 
     <properties>
+        <mainClass>dev.seariver.LisBotWeb</mainClass>
         <java.version>21</java.version>
         <cobalt.version>0.0.5</cobalt.version>
-        <mainClass>dev.seariver.LisBotWeb</mainClass>
+        <junit-jupiter-api.version>5.10.2</junit-jupiter-api.version>
+        <assertj-core.version>3.25.3</assertj-core.version>
     </properties>
 
     <dependencies>
@@ -26,13 +28,19 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>5.10.2</version>
+            <version>${junit-jupiter-api.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <version>${junit-jupiter-api.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>3.25.3</version>
+            <version>${assertj-core.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
