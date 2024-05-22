@@ -6,7 +6,7 @@ import it.auties.whatsapp.model.info.MessageInfo;
 
 import static java.lang.System.out;
 
-public record WhatsappListener() implements Listener {
+public record OneForAllListener() implements Listener {
 
     @Override
     public void onNewMessage(Whatsapp whatsapp, MessageInfo info) {
