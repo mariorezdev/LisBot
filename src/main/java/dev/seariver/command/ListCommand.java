@@ -7,8 +7,9 @@ import it.auties.whatsapp.model.message.standard.TextMessage;
 import static java.lang.System.out;
 
 public class ListCommand implements Command {
+
     @Override
-    public void onCommand(Whatsapp whatsapp, MessageInfo messageInfo) {
+    public void execute(Whatsapp whatsapp, MessageInfo messageInfo) {
 
         var textMessage = (TextMessage) messageInfo.message().content();
 
@@ -16,7 +17,7 @@ public class ListCommand implements Command {
     }
 
     @Override
-    public String command() {
+    public String alias() {
         return "/l";
     }
 }

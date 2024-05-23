@@ -5,7 +5,7 @@ import it.auties.whatsapp.model.info.MessageInfo;
 
 public interface Command {
 
-    void onCommand(Whatsapp whatsapp, MessageInfo info);
+    void execute(Whatsapp whatsapp, MessageInfo info);
 
-    String command();
+    String alias();
 }

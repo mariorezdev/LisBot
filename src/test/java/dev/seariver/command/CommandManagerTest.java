@@ -1,33 +1,43 @@
 package dev.seariver.command;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.EmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 class CommandManagerTest {
 
-    @Test
-    void GIVEN_valid_command_WHEN_find_command_MUST_return_present() {
+    @ParameterizedTest
+    @ValueSource(strings = {
+        "/l",
+        "/L",
+        "/l ",
+        " /l",
+        " /l  ",
+        " /L  ",
+    })
+    void GIVEN_valid_command_WHEN_find_command_MUST_return_present(String validAlias) {
 
         // GIVEN
-        var textCommand = "/l";
         CommandManager.instance().addCommands(new ListCommand());
 
         // WHEN
-        var optionalCommand = CommandManager.instance().findCommand(textCommand);
+        var optionalCommand = CommandManager.instance().findCommand(validAlias);
 
         // THEN
-        assertThat(optionalCommand).isPresent();
+        assertThat(optionalCommand)
+            .isPresent()
+            .get()
+            .isInstanceOf(ListCommand.class);
     }
 
     @ParameterizedTest
-    @NullAndEmptySource
+    @EmptySource
     @ValueSource(strings = {
-        "  ",
+        "   ",
         "l",
+        "L",
         "//l",
         "/x",
     })

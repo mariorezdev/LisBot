@@ -24,7 +24,7 @@ public class CommandManager {
 
     public Optional<Command> findCommand(String filter) {
         return commands.stream()
-            .filter(command -> command.command().equalsIgnoreCase(filter))
+            .filter(command -> command.alias().equalsIgnoreCase(filter.trim()))
             .findAny();
     }
 }
