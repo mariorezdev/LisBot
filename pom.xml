@@ -15,6 +15,7 @@
         <java.version>21</java.version>
         <cobalt.version>0.0.5</cobalt.version>
         <junit-jupiter-api.version>5.10.2</junit-jupiter-api.version>
+        <mockito-core.version>5.12.0</mockito-core.version>
         <assertj-core.version>3.25.3</assertj-core.version>
     </properties>
 
@@ -35,6 +36,12 @@
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-params</artifactId>
             <version>${junit-jupiter-api.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>${mockito-core.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
