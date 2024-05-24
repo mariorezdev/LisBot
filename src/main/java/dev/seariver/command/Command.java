@@ -1,11 +1,10 @@
 package dev.seariver.command;
 
-import it.auties.whatsapp.api.Whatsapp;
-import it.auties.whatsapp.model.info.MessageInfo;
+import dev.seariver.Event;
 
 public interface Command {
 
-    void execute(Whatsapp whatsapp, MessageInfo info);
+    void execute(Event event);
 
     String alias();
 }

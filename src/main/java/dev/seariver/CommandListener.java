@@ -1,26 +1,25 @@
 package dev.seariver;
 
-import dev.seariver.command.CommandManager;
+import dev.seariver.command.CommandBus;
 import it.auties.whatsapp.api.Whatsapp;
 import it.auties.whatsapp.listener.Listener;
 import it.auties.whatsapp.model.info.MessageInfo;
-import it.auties.whatsapp.model.message.standard.TextMessage;
 
 import static java.lang.System.out;
 
-public record CommandListener(CommandManager commandManager) implements Listener {
+public record CommandListener(CommandBus commandBus) implements Listener {
 
     @Override
     public void onNewMessage(Whatsapp whatsapp, MessageInfo messageInfo) {
 
         out.printf("New message: %s%n", messageInfo.toJson());
 
-        if (!(messageInfo.message().content() instanceof TextMessage textMessage)) {
+        var event = new Event(whatsapp, messageInfo);
+
+        if (event.text().isEmpty()) {
             return;
         }
 
-        commandManager
-            .findCommand(textMessage.text())
-            .ifPresent(command -> command.execute(whatsapp, messageInfo));
+        commandBus.execute(event);
     }
 }

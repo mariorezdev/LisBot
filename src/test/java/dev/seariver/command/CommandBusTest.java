@@ -6,7 +6,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-class CommandManagerTest {
+class CommandBusTest {
 
     @ParameterizedTest
     @ValueSource(strings = {
@@ -20,10 +20,10 @@ class CommandManagerTest {
     void GIVEN_valid_command_WHEN_find_command_MUST_return_present(String validAlias) {
 
         // GIVEN
-        CommandManager.instance().addCommands(new ListCommand());
+        CommandBus.instance().addCommands(new ListCommand());
 
         // WHEN
-        var optionalCommand = CommandManager.instance().findCommand(validAlias);
+        var optionalCommand = CommandBus.instance().findCommand(validAlias);
 
         // THEN
         assertThat(optionalCommand)
@@ -44,10 +44,10 @@ class CommandManagerTest {
     void GIVEN_invalid_or_nonexistent_command_WHEN_find_command_MUST_return_empty(String textCommand) {
 
         // GIVEN
-        CommandManager.instance().addCommands(new ListCommand());
+        CommandBus.instance().addCommands(new ListCommand());
 
         // WHEN
-        var optionalCommand = CommandManager.instance().findCommand(textCommand);
+        var optionalCommand = CommandBus.instance().findCommand(textCommand);
 
         // THEN
         assertThat(optionalCommand).isEmpty();

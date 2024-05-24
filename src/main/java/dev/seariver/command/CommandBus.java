@@ -1,20 +1,27 @@
 package dev.seariver.command;
 
+import dev.seariver.Event;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-public class CommandManager {
+public class CommandBus {
 
-    private static final CommandManager instance = new CommandManager();
+    private static final CommandBus instance = new CommandBus();
     private final Set<Command> commands;
 
-    private CommandManager() {
+    private CommandBus() {
         this.commands = new HashSet<>();
     }
 
-    public static CommandManager instance() {
+    public void execute(Event event) {
+        findCommand(event.text())
+            .ifPresent(command -> command.execute(event));
+    }
+
+    public static CommandBus instance() {
         return instance;
     }
 
