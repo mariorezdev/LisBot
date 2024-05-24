@@ -1,12 +1,36 @@
 package dev.seariver.command;
 
+import dev.seariver.Event;
+import it.auties.whatsapp.api.Whatsapp;
+import it.auties.whatsapp.model.info.ChatMessageInfo;
+import it.auties.whatsapp.model.info.MessageInfo;
+import it.auties.whatsapp.model.message.model.MessageContainerBuilder;
+import it.auties.whatsapp.model.message.standard.TextMessageBuilder;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class CommandBusTest {
+
+    Whatsapp whatsapp = mock(Whatsapp.class);
+    MessageInfo messageInfo = mock(ChatMessageInfo.class);
+    static ListCommand listCommand = spy(new ListCommand());
+    static CommandBus commandBus = CommandBus.instance();
+
+    @BeforeAll
+    static void setup() {
+        doNothing().when(listCommand).execute(any(Event.class));
+        commandBus.addCommands(listCommand);
+    }
 
     @ParameterizedTest
     @ValueSource(strings = {
@@ -17,19 +41,23 @@ class CommandBusTest {
         " /l  ",
         " /L  ",
     })
-    void GIVEN_valid_command_WHEN_find_command_MUST_return_present(String validAlias) {
+    void GIVEN_valid_text_command_WHEN_bus_execute_event_MUST_call_correspondent_command(String textCommand) {
 
         // GIVEN
-        CommandBus.instance().addCommands(new ListCommand());
+        var textMessage = new TextMessageBuilder()
+            .text(textCommand)
+            .build();
+        var messageContainer = new MessageContainerBuilder()
+            .textMessage(textMessage)
+            .build();
+        when(messageInfo.message()).thenReturn(messageContainer);
+        var event = new Event(whatsapp, messageInfo);
 
         // WHEN
-        var optionalCommand = CommandBus.instance().findCommand(validAlias);
+        commandBus.execute(event);
 
         // THEN
-        assertThat(optionalCommand)
-            .isPresent()
-            .get()
-            .isInstanceOf(ListCommand.class);
+        verify(listCommand).execute(event);
     }
 
     @ParameterizedTest
@@ -41,15 +69,22 @@ class CommandBusTest {
         "//l",
         "/x",
     })
-    void GIVEN_invalid_or_nonexistent_command_WHEN_find_command_MUST_return_empty(String textCommand) {
+    void GIVEN_invalid_text_command_WHEN_bus_execute_event_CANT_call_any_command(String textCommand) {
 
         // GIVEN
-        CommandBus.instance().addCommands(new ListCommand());
+        var textMessage = new TextMessageBuilder()
+            .text(textCommand)
+            .build();
+        var messageContainer = new MessageContainerBuilder()
+            .textMessage(textMessage)
+            .build();
+        when(messageInfo.message()).thenReturn(messageContainer);
+        var event = new Event(whatsapp, messageInfo);
 
         // WHEN
-        var optionalCommand = CommandBus.instance().findCommand(textCommand);
+        commandBus.execute(event);
 
         // THEN
-        assertThat(optionalCommand).isEmpty();
+        verify(listCommand, never()).execute(event);
     }
 }

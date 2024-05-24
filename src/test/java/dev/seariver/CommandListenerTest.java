@@ -21,7 +21,7 @@ class CommandListenerTest {
     CommandBus commandBus = spy(CommandBus.instance());
 
     @Test
-    void GIVEN_valid_message_WHE_new_message_arrives_MUST_call_command_manager() {
+    void GIVEN_valid_message_WHEN_new_message_arrives_MUST_call_command_bus() {
 
         // GIVEN
         var textMessage = new TextMessageBuilder()

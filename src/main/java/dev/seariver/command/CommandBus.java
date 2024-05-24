@@ -29,9 +29,9 @@ public class CommandBus {
         this.commands.addAll(Arrays.asList(commands));
     }
 
-    public Optional<Command> findCommand(String filter) {
+    private Optional<Command> findCommand(String text) {
         return commands.stream()
-            .filter(command -> command.alias().equalsIgnoreCase(filter.trim()))
+            .filter(command -> command.alias().equalsIgnoreCase(text))
             .findAny();
     }
 }
