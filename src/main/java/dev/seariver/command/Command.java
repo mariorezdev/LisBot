@@ -6,5 +6,5 @@ public interface Command {
 
     void execute(NewMessage event);
 
-    String alias();
+    boolean itsMine(String text);
 }

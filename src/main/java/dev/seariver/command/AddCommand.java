@@ -13,7 +13,7 @@ public class AddCommand implements Command {
     }
 
     @Override
-    public String alias() {
-        return "/a";
+    public boolean itsMine(String text) {
+        return text.equalsIgnoreCase("/a");
     }
 }

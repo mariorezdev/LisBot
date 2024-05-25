@@ -13,7 +13,7 @@ public class ListCommand implements Command {
     }
 
     @Override
-    public String alias() {
-        return "/l";
+    public boolean itsMine(String text) {
+        return text.equalsIgnoreCase("/l");
     }
 }

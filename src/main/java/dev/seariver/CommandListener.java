@@ -47,7 +47,8 @@ public class CommandListener implements Listener {
 
     private Optional<Command> findCommand(String text) {
         return commands.stream()
-            .filter(command -> command.alias().equalsIgnoreCase(text))
+            .filter(command -> command.itsMine(text))
             .findAny();
     }
 }
+
