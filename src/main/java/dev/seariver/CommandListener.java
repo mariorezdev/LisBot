@@ -15,6 +15,11 @@ import static java.lang.System.out;
 public class CommandListener implements Listener {
 
     private final Set<Command> commands = new HashSet<>();
+    private final Repository repository;
+
+    public CommandListener(Repository repository) {
+        this.repository = repository;
+    }
 
     @Override
     public void onNewMessage(Whatsapp whatsapp, MessageInfo info) {
@@ -24,6 +29,10 @@ public class CommandListener implements Listener {
         var newMessage = new NewMessage(info);
 
         if (newMessage.text().isEmpty()) {
+            return;
+        }
+
+        if (!repository.isRegisteredChat(newMessage.chatJid().toString())) {
             return;
         }
 

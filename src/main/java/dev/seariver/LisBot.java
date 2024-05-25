@@ -5,6 +5,7 @@ import dev.seariver.command.ListCommand;
 import it.auties.whatsapp.api.QrHandler;
 import it.auties.whatsapp.api.WebHistoryLength;
 import it.auties.whatsapp.api.Whatsapp;
+import org.h2.jdbcx.JdbcConnectionPool;
 
 import static java.lang.System.out;
 
@@ -12,7 +13,10 @@ public class LisBot {
 
     public static void main(String[] args) {
 
-        var commandListener = new CommandListener();
+        var dataSource = JdbcConnectionPool.create("jdbc:h2:lisbot;MODE=PostgreSQL", "sa", "sa");
+        var repository = new Repository(dataSource);
+
+        var commandListener = new CommandListener(repository);
         commandListener.addCommands(
             new ListCommand(),
             new AddCommand()
