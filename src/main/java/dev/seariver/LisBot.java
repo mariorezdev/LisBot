@@ -1,6 +1,6 @@
 package dev.seariver;
 
-import dev.seariver.command.CommandBus;
+import dev.seariver.command.AddCommand;
 import dev.seariver.command.ListCommand;
 import it.auties.whatsapp.api.QrHandler;
 import it.auties.whatsapp.api.WebHistoryLength;
@@ -12,11 +12,11 @@ public class LisBot {
 
     public static void main(String[] args) {
 
-        CommandBus.instance().addCommands(
-            new ListCommand()
+        var commandListener = new CommandListener();
+        commandListener.addCommands(
+            new ListCommand(),
+            new AddCommand()
         );
-
-        var commandListener = new CommandListener(CommandBus.instance());
 
         Whatsapp.webBuilder() // Use the Web api
             .lastConnection() // Deserialize the last connection, or create a new one if it doesn't exist

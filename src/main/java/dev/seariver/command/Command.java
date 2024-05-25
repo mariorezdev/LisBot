@@ -1,10 +1,10 @@
 package dev.seariver.command;
 
-import dev.seariver.Event;
+import dev.seariver.NewMessage;
 
 public interface Command {
 
-    void execute(Event event);
+    void execute(NewMessage event);
 
     String alias();
 }

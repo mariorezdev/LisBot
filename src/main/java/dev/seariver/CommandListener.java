@@ -1,25 +1,53 @@
 package dev.seariver;
 
-import dev.seariver.command.CommandBus;
+import dev.seariver.command.Command;
 import it.auties.whatsapp.api.Whatsapp;
 import it.auties.whatsapp.listener.Listener;
 import it.auties.whatsapp.model.info.MessageInfo;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+
 import static java.lang.System.out;
 
-public record CommandListener(CommandBus commandBus) implements Listener {
+public class CommandListener implements Listener {
+
+    private final Set<Command> commands = new HashSet<>();
 
     @Override
-    public void onNewMessage(Whatsapp whatsapp, MessageInfo messageInfo) {
+    public void onNewMessage(Whatsapp whatsapp, MessageInfo info) {
 
-        out.printf("New message: %s%n", messageInfo.toJson());
+        out.printf("New message: %s%n", info.toJson());
 
-        var event = new Event(whatsapp, messageInfo);
+        var newMessage = new NewMessage(info);
 
-        if (event.text().isEmpty()) {
+        if (newMessage.text().isEmpty()) {
             return;
         }
 
-        commandBus.execute(event);
+        findCommand(newMessage.text())
+            .ifPresent(command -> command.execute(newMessage));
+
+        if (newMessage.response().isEmpty()) {
+            return;
+        }
+
+        if (newMessage.reply()) {
+            whatsapp.sendChatMessage(newMessage.chatJid(), newMessage.response(), info);
+        } else {
+            whatsapp.sendChatMessage(newMessage.chatJid(), newMessage.response());
+        }
+    }
+
+    public void addCommands(Command... commands) {
+        this.commands.addAll(Arrays.asList(commands));
+    }
+
+    private Optional<Command> findCommand(String text) {
+        return commands.stream()
+            .filter(command -> command.alias().equalsIgnoreCase(text))
+            .findAny();
     }
 }
