@@ -28,20 +28,13 @@ public class CommandListener implements Listener {
 
         var newMessage = new NewMessage(info);
 
-        if (newMessage.text().isEmpty()) {
-            return;
-        }
-
-        if (!repository.isRegisteredChat(newMessage.chatJid().toString())) {
-            return;
-        }
+        if (newMessage.text().isEmpty() ||
+            !repository.isRegisteredChat(newMessage.chatJid().toString())) return;
 
         findCommand(newMessage.text())
             .ifPresent(command -> command.execute(newMessage));
 
-        if (newMessage.response().isEmpty()) {
-            return;
-        }
+        if (newMessage.response().isEmpty()) return;
 
         if (newMessage.reply()) {
             whatsapp.sendChatMessage(newMessage.chatJid(), newMessage.response(), info);

@@ -1,15 +1,43 @@
 package dev.seariver.command;
 
 import dev.seariver.NewMessage;
+import dev.seariver.Repository;
+
+import java.time.format.DateTimeFormatter;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class ListCommand implements Command {
 
+    private final Repository repository;
+
+    public ListCommand(Repository repository) {
+        this.repository = repository;
+    }
+
     @Override
-    public void execute(NewMessage event) {
+    public void execute(NewMessage newMessage) {
 
-        var response = "Received command: %s".formatted(event.text());
+        newMessage.response("Sem eventos programados");
 
-        event.response(response);
+        var nextEvent = repository.findNextEvent(newMessage.chatJid().toString());
+
+        nextEvent.ifPresent(event -> {
+            var persons = repository.findPersonList(event.id());
+            var personList = persons.isEmpty()
+                ? "01 -"
+                : IntStream.range(0, persons.size())
+                .mapToObj(i -> "%02d - %s".formatted(i + 1, persons.get(i).name()))
+                .collect(Collectors.joining("\n"));
+
+            var response = event.template()
+                .replace("#DATE", event.eventDate().format(DateTimeFormatter.ofPattern("dd/MM")))
+                .replace("#START_AT", event.startAt().format(DateTimeFormatter.ofPattern("HH'h'mm")))
+                .replace("#END_AT", event.endAt().format(DateTimeFormatter.ofPattern("HH'h'mm")))
+                .replace("#PERSON_LIST", personList);
+
+            newMessage.response(response);
+        });
     }
 
     @Override

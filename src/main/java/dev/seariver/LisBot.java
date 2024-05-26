@@ -18,7 +18,7 @@ public class LisBot {
 
         var commandListener = new CommandListener(repository);
         commandListener.addCommands(
-            new ListCommand(),
+            new ListCommand(repository),
             new AddCommand()
         );
 
