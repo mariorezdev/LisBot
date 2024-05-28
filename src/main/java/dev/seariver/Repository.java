@@ -124,7 +124,11 @@ public class Repository {
                 template,
                 created_at,
                 updated_at
-            FROM event WHERE chat_group_jid = ?""";
+            FROM event 
+            WHERE chat_group_jid = ? 
+            AND event_date >= CURRENT_DATE
+            ORDER BY event_date DESC
+            LIMIT 1""";
 
         try (Connection conn = datasource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)

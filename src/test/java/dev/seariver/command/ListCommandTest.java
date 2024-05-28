@@ -7,6 +7,9 @@ import it.auties.whatsapp.model.jid.Jid;
 import it.auties.whatsapp.model.message.model.ChatMessageKeyBuilder;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -27,7 +30,7 @@ class ListCommandTest extends TestHelper {
     }
 
     @Test
-    void GIVEN_chat_jid_WHEN_has_event_MUST_return_event_list() {
+    void GIVEN_list_command_WHEN_group_has_event_MUST_return_only_next_event() {
 
         // GIVEN
         var chatMessageInfo = new ChatMessageInfoBuilder()
@@ -44,22 +47,23 @@ class ListCommandTest extends TestHelper {
         listCommand.execute(newMessage);
 
         // THEN
-        assertThat(newMessage.response()).isEqualTo(
-            """
-                ID: 1
-                **PRÓXIMA JOGATINA - SÁBADO - 01/06**
-                Local: Shopping Jardim Pamplona - Rua Pamplona, 1704 (Próximo ao metrô Trianon-Masp - são uns 15/20min a pé, não é colado) - 3° Andar, na frente do cinema
-                Horário: 14h00
+        var expected = """
+            ID: 3
+            **PRÓXIMA JOGATINA - SÁBADO - %s**
+            Local: Shopping Jardim Pamplona - Rua Pamplona, 1704 (Próximo ao metrô Trianon-Masp - são uns 15/20min a pé, não é colado) - 3° Andar, na frente do cinema
+            Horário: 14h00
 
-                PESSOAS
-                01 - Fulana de Tal
-                **02 - Sicrana**
-                03 - Beltrana
+            PESSOAS
+            01 - Fulana de Tal
+            **02 - Sicrana**
+            03 - Beltrana
 
-                - Compre jogos na BoardGamePlay Store! Cupom de **5%** em todo o site: **JOGATINA**!
-                - Leve casaco! Às vezes o shopping fica **muito** gelado.
-                - Lembre-se de que o shopping fecha às 22h00!"""
-        );
+            - Compre jogos na BoardGamePlay Store! Cupom de **5%** em todo o site: **JOGATINA**!
+            - Leve casaco! Às vezes o shopping fica **muito** gelado.
+            - Lembre-se de que o shopping fecha às 22h00!"""
+            .replace("%s", LocalDate.now().plusDays(2).format(DateTimeFormatter.ofPattern("dd/MM")));
+
+        assertThat(newMessage.response()).isEqualTo(expected);
     }
 
     @Test
@@ -101,19 +105,20 @@ class ListCommandTest extends TestHelper {
         listCommand.execute(newMessage);
 
         // THEN
-        assertThat(newMessage.response()).isEqualTo(
-            """
-                ID: 2
-                **PRÓXIMA JOGATINA - SÁBADO - 01/06**
-                Local: Shopping Jardim Pamplona - Rua Pamplona, 1704 (Próximo ao metrô Trianon-Masp - são uns 15/20min a pé, não é colado) - 3° Andar, na frente do cinema
-                Horário: 14h00
+        var expected = """
+            ID: 2
+            **PRÓXIMA JOGATINA - SÁBADO - %s**
+            Local: Shopping Jardim Pamplona - Rua Pamplona, 1704 (Próximo ao metrô Trianon-Masp - são uns 15/20min a pé, não é colado) - 3° Andar, na frente do cinema
+            Horário: 14h00
 
-                PESSOAS
+            PESSOAS
 
 
-                - Compre jogos na BoardGamePlay Store! Cupom de **5%** em todo o site: **JOGATINA**!
-                - Leve casaco! Às vezes o shopping fica **muito** gelado.
-                - Lembre-se de que o shopping fecha às 22h00!"""
-        );
+            - Compre jogos na BoardGamePlay Store! Cupom de **5%** em todo o site: **JOGATINA**!
+            - Leve casaco! Às vezes o shopping fica **muito** gelado.
+            - Lembre-se de que o shopping fecha às 22h00!"""
+            .replace("%s", LocalDate.now().plusDays(2).format(DateTimeFormatter.ofPattern("dd/MM")));
+
+        assertThat(newMessage.response()).isEqualTo(expected);
     }
 }
