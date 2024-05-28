@@ -2,6 +2,7 @@ package dev.seariver;
 
 import dev.seariver.model.Event;
 import dev.seariver.model.Person;
+import org.h2.jdbc.JdbcSQLIntegrityConstraintViolationException;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -16,6 +17,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import static java.lang.System.out;
 
 public class Repository {
 
@@ -80,6 +83,8 @@ public class Repository {
             stmt.setTimestamp(4, Timestamp.from(Instant.now()));
             stmt.setTimestamp(5, Timestamp.from(Instant.now()));
             stmt.executeUpdate();
+        } catch (JdbcSQLIntegrityConstraintViolationException e) {
+            out.println(e.getMessage());
         } catch (SQLException e) {
             e.printStackTrace();
         }

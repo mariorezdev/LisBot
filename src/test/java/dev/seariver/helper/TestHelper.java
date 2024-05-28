@@ -7,13 +7,15 @@ import it.auties.whatsapp.model.message.standard.TextMessageBuilder;
 import org.h2.jdbcx.JdbcConnectionPool;
 import org.junit.jupiter.api.BeforeEach;
 
+import java.util.Random;
+
 public class TestHelper {
 
     protected Repository repository;
 
     @BeforeEach
     void setup() {
-        var url = "jdbc:h2:mem:TEST;" +
+        var url = "jdbc:h2:mem:TEST_" + new Random().nextInt() + ";" +
             "MODE=PostgreSQL;" +
             "INIT=RUNSCRIPT FROM 'src/main/resources/01_initial_setup.sql'\\;" +
             "RUNSCRIPT FROM 'classpath:dataset.sql'\\;";

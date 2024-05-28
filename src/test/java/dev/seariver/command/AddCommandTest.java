@@ -2,6 +2,7 @@ package dev.seariver.command;
 
 import dev.seariver.NewMessage;
 import dev.seariver.helper.TestHelper;
+import it.auties.whatsapp.model.contact.ContactBuilder;
 import it.auties.whatsapp.model.info.ChatMessageInfoBuilder;
 import it.auties.whatsapp.model.jid.Jid;
 import it.auties.whatsapp.model.message.model.ChatMessageKeyBuilder;
@@ -32,13 +33,18 @@ class AddCommandTest extends TestHelper {
     void GIVEN_chat_jid_WHEN_add_new_person_MUST_return_updated_event_list() {
 
         // GIVEN
+        var senderJid = Jid.of("5511912345678:12@s.whatsapp.net");
         var chatMessageInfo = new ChatMessageInfoBuilder()
             .key(new ChatMessageKeyBuilder()
                 .chatJid(Jid.of("111111111111111111@g.us"))
                 .build())
-            .senderJid(Jid.of("5511912345678:12@s.whatsapp.net"))
+            .senderJid(senderJid)
             .message(getMessageContainer("/a"))
             .build();
+        chatMessageInfo.setSender(new ContactBuilder()
+            .shortName("Novata")
+            .jid(senderJid)
+            .build());
         var newMessage = new NewMessage(chatMessageInfo);
 
         // WHEN
@@ -57,7 +63,45 @@ class AddCommandTest extends TestHelper {
             01 - Fulana de Tal
             02 - Sicrana
             03 - Beltrana
-            *04 - 5511912345678*
+            *04 - Novata*
+
+            - Compre jogos na BoardGamePlay Store! Cupom de *5%* em todo o site: *JOGATINA*!
+            - Leve casaco! Às vezes o shopping fica *muito* gelado.
+            - Lembre-se de que o shopping fecha às 22h00!"""
+            .replace("%s", LocalDate.now().plusDays(2).format(DateTimeFormatter.ofPattern("dd/MM")));
+
+        assertThat(newMessage.response()).isEqualTo(expected);
+    }
+
+    @Test
+    void GIVEN_chat_jid_WHEN_add_existent_person_MUST_return_event_list() {
+
+        // GIVEN
+        var chatMessageInfo = new ChatMessageInfoBuilder()
+            .key(new ChatMessageKeyBuilder()
+                .chatJid(Jid.of("111111111111111111@g.us"))
+                .build())
+            .senderJid(Jid.of("5511922222222:22@s.whatsapp.net"))
+            .message(getMessageContainer("/a"))
+            .build();
+        var newMessage = new NewMessage(chatMessageInfo);
+
+        // WHEN
+        var addCommand = new AddCommand(repository);
+        addCommand.execute(newMessage);
+
+        // THEN
+        assertThat(newMessage.reply()).isTrue();
+        var expected = """
+            ID: 3
+            *PRÓXIMA JOGATINA - SÁBADO - %s*
+            Local: Shopping Jardim Pamplona - Rua Pamplona, 1704 (Próximo ao metrô Trianon-Masp - são uns 15/20min a pé, não é colado) - 3° Andar, na frente do cinema
+            Horário: 14h00
+
+            PESSOAS
+            01 - Fulana de Tal
+            *02 - Sicrana*
+            03 - Beltrana
 
             - Compre jogos na BoardGamePlay Store! Cupom de *5%* em todo o site: *JOGATINA*!
             - Leve casaco! Às vezes o shopping fica *muito* gelado.

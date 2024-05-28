@@ -122,3 +122,4 @@ class ListCommandTest extends TestHelper {
         assertThat(newMessage.response()).isEqualTo(expected);
     }
 }
+
