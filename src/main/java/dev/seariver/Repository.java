@@ -41,7 +41,7 @@ public class Repository {
             .range(0, persons.size())
             .mapToObj(i -> {
                 var row = newMessage.senderJid().toString().equals(persons.get(i).jid())
-                    ? "**%02d - %s**"
+                    ? "*%02d - %s*"
                     : "%02d - %s";
                 return row.formatted(i + 1, persons.get(i).name());
             })
@@ -113,7 +113,6 @@ public class Repository {
 
         Optional<Event> result = Optional.empty();
 
-        // todo: limit and order by
         String sql = """
             SELECT
                 id,

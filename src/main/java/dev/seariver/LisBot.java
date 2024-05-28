@@ -15,9 +15,11 @@ public class LisBot {
 
         var url = "jdbc:h2:./lisbot;" +
             "MODE=PostgreSQL;" +
-            "INIT=RUNSCRIPT FROM 'src/main/resources/01_initial_setup.sql'\\;";
+            "INIT=RUNSCRIPT FROM 'classpath:01_initial_setup.sql'\\;" +
+            "RUNSCRIPT FROM 'classpath:dataset.sql'\\;";
 
-            var dataSource = JdbcConnectionPool.create(url, "sa", "sa");
+
+        var dataSource = JdbcConnectionPool.create(url, "sa", "sa");
         var repository = new Repository(dataSource);
 
         var commandListener = new CommandListener(repository);

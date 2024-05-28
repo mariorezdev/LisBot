@@ -49,7 +49,7 @@ class AddCommandTest extends TestHelper {
         assertThat(newMessage.reply()).isTrue();
         var expected = """
             ID: 3
-            **PRÓXIMA JOGATINA - SÁBADO - %s**
+            *PRÓXIMA JOGATINA - SÁBADO - %s*
             Local: Shopping Jardim Pamplona - Rua Pamplona, 1704 (Próximo ao metrô Trianon-Masp - são uns 15/20min a pé, não é colado) - 3° Andar, na frente do cinema
             Horário: 14h00
 
@@ -57,10 +57,10 @@ class AddCommandTest extends TestHelper {
             01 - Fulana de Tal
             02 - Sicrana
             03 - Beltrana
-            **04 - 5511912345678**
+            *04 - 5511912345678*
 
-            - Compre jogos na BoardGamePlay Store! Cupom de **5%** em todo o site: **JOGATINA**!
-            - Leve casaco! Às vezes o shopping fica **muito** gelado.
+            - Compre jogos na BoardGamePlay Store! Cupom de *5%* em todo o site: *JOGATINA*!
+            - Leve casaco! Às vezes o shopping fica *muito* gelado.
             - Lembre-se de que o shopping fecha às 22h00!"""
             .replace("%s", LocalDate.now().plusDays(2).format(DateTimeFormatter.ofPattern("dd/MM")));
 

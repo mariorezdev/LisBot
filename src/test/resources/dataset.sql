@@ -13,29 +13,29 @@ MERGE INTO event(id, chat_group_jid, event_date, start_at, end_at, template, cre
 -----------------------------------------------------------
 (2, '333333333333333333@g.us', CURRENT_DATE + 2, '14:00', '22:00',
 'ID: #ID
-**PRÓXIMA JOGATINA - SÁBADO - #DATE**
+*PRÓXIMA JOGATINA - SÁBADO - #DATE*
 Local: Shopping Jardim Pamplona - Rua Pamplona, 1704 (Próximo ao metrô Trianon-Masp - são uns 15/20min a pé, não é colado) - 3° Andar, na frente do cinema
 Horário: #START_AT
 
 PESSOAS
 #PERSON_LIST
 
-- Compre jogos na BoardGamePlay Store! Cupom de **5%** em todo o site: **JOGATINA**!
-- Leve casaco! Às vezes o shopping fica **muito** gelado.
+- Compre jogos na BoardGamePlay Store! Cupom de *5%* em todo o site: *JOGATINA*!
+- Leve casaco! Às vezes o shopping fica *muito* gelado.
 - Lembre-se de que o shopping fecha às #END_AT!',
 CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
 -----------------------------------------------------------
 (3, '111111111111111111@g.us', CURRENT_DATE + 2, '14:00', '22:00',
 'ID: #ID
-**PRÓXIMA JOGATINA - SÁBADO - #DATE**
+*PRÓXIMA JOGATINA - SÁBADO - #DATE*
 Local: Shopping Jardim Pamplona - Rua Pamplona, 1704 (Próximo ao metrô Trianon-Masp - são uns 15/20min a pé, não é colado) - 3° Andar, na frente do cinema
 Horário: #START_AT
 
 PESSOAS
 #PERSON_LIST
 
-- Compre jogos na BoardGamePlay Store! Cupom de **5%** em todo o site: **JOGATINA**!
-- Leve casaco! Às vezes o shopping fica **muito** gelado.
+- Compre jogos na BoardGamePlay Store! Cupom de *5%* em todo o site: *JOGATINA*!
+- Leve casaco! Às vezes o shopping fica *muito* gelado.
 - Lembre-se de que o shopping fecha às #END_AT!',
 CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ;
