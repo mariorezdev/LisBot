@@ -13,7 +13,6 @@ public class AddCommand implements Command {
 
     @Override
     public void execute(NewMessage newMessage) {
-
         repository.addPersonOnNextEvent(newMessage);
     }
 

@@ -25,51 +25,66 @@ public class Repository {
         this.datasource = datasource;
     }
 
+    public void listNextEvent(NewMessage newMessage) {
+
+        newMessage.response("Sem eventos programados");
+
+        var nextEvent = findNextEvent(newMessage);
+
+        if (nextEvent.isEmpty()) return;
+
+        var event = nextEvent.get();
+
+        var persons = findPersonList(event.id());
+
+        var personList = IntStream
+            .range(0, persons.size())
+            .mapToObj(i -> {
+                var row = newMessage.senderJid().toString().equals(persons.get(i).jid())
+                    ? "**%02d - %s**"
+                    : "%02d - %s";
+                return row.formatted(i + 1, persons.get(i).name());
+            })
+            .collect(Collectors.joining("\n"));
+
+        var response = event.template()
+            .replace("#ID", String.valueOf(event.id()))
+            .replace("#DATE", event.eventDate().format(DateTimeFormatter.ofPattern("dd/MM")))
+            .replace("#START_AT", event.startAt().format(DateTimeFormatter.ofPattern("HH'h'mm")))
+            .replace("#END_AT", event.endAt().format(DateTimeFormatter.ofPattern("HH'h'mm")))
+            .replace("#PERSON_LIST", personList);
+
+        newMessage.response(response);
+    }
+
     public void addPersonOnNextEvent(NewMessage newMessage) {
 
         newMessage.reply("Sem eventos programados");
 
         var nextEvent = findNextEvent(newMessage);
 
-        nextEvent.ifPresent(event -> {
-            var sql = """
-                INSERT INTO person 
-                (jid, event_id, name, created_at, updated_at) 
-                values (?, ?, ?, ?, ?)""";
+        if (nextEvent.isEmpty()) return;
 
-            try (Connection conn = datasource.getConnection();
-                 PreparedStatement stmt = conn.prepareStatement(sql)) {
-                stmt.setString(1, newMessage.senderJid().toString());
-                stmt.setInt(2, event.id());
-                stmt.setString(3, newMessage.senderName());
-                stmt.setTimestamp(4, Timestamp.from(Instant.now()));
-                stmt.setTimestamp(5, Timestamp.from(Instant.now()));
-                stmt.executeUpdate();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+        var event = nextEvent.get();
 
-            var persons = findPersonList(event.id());
+        var sql = """
+            INSERT INTO person 
+            (jid, event_id, name, created_at, updated_at) 
+            values (?, ?, ?, ?, ?)""";
 
-            var personList = IntStream
-                .range(0, persons.size())
-                .mapToObj(i -> {
-                    var row = newMessage.senderJid().toString().equals(persons.get(i).jid())
-                        ? "**%02d - %s**"
-                        : "%02d - %s";
-                    return row.formatted(i + 1, persons.get(i).name());
-                })
-                .collect(Collectors.joining("\n"));
+        try (Connection conn = datasource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, newMessage.senderJid().toString());
+            stmt.setInt(2, event.id());
+            stmt.setString(3, newMessage.senderName());
+            stmt.setTimestamp(4, Timestamp.from(Instant.now()));
+            stmt.setTimestamp(5, Timestamp.from(Instant.now()));
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
-            var response = event.template()
-                .replace("#ID", String.valueOf(event.id()))
-                .replace("#DATE", event.eventDate().format(DateTimeFormatter.ofPattern("dd/MM")))
-                .replace("#START_AT", event.startAt().format(DateTimeFormatter.ofPattern("HH'h'mm")))
-                .replace("#END_AT", event.endAt().format(DateTimeFormatter.ofPattern("HH'h'mm")))
-                .replace("#PERSON_LIST", personList);
-
-            newMessage.reply(response);
-        });
+        listNextEvent(newMessage);
     }
 
     public boolean isRegisteredChat(NewMessage newMessage) {

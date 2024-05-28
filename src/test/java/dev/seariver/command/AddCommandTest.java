@@ -36,7 +36,6 @@ class AddCommandTest extends TestHelper {
             .senderJid(Jid.of("5511912345678:12@s.whatsapp.net"))
             .message(getMessageContainer("/a"))
             .build();
-
         var newMessage = new NewMessage(chatMessageInfo);
 
         // WHEN
@@ -44,6 +43,7 @@ class AddCommandTest extends TestHelper {
         addCommand.execute(newMessage);
 
         // THEN
+        assertThat(newMessage.reply()).isTrue();
         assertThat(newMessage.response()).isEqualTo(
             """
                 ID: 1
