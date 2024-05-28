@@ -37,7 +37,11 @@ public class NewMessage {
     }
 
     public String senderName() {
+
         if (info instanceof ChatMessageInfo chatMessageInfo) {
+            if (chatMessageInfo.pushName().isPresent()) {
+                return chatMessageInfo.pushName().get();
+            }
             return chatMessageInfo.senderName();
         }
 
