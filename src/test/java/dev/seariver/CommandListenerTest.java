@@ -18,7 +18,7 @@ import static org.mockito.Mockito.when;
 class CommandListenerTest extends TestHelper {
 
     Whatsapp whatsapp = mock(Whatsapp.class);
-    MessageInfo messageInfo = mock(ChatMessageInfo.class);
+    MessageInfo messageInfo = mock(ChatMessageInfo.class); // todo: use builder
     ListCommand listCommand = mock(ListCommand.class);
 
     @Test
@@ -26,7 +26,7 @@ class CommandListenerTest extends TestHelper {
 
         // GIVEN
         when(messageInfo.message()).thenReturn(getMessageContainer("/l"));
-        when(messageInfo.parentJid()).thenReturn(Jid.of("121212121212121212@g.us"));
+        when(messageInfo.parentJid()).thenReturn(Jid.of("111111111111111111@g.us"));
         when(listCommand.itsMine(anyString())).thenReturn(true);
 
         var commandListener = new CommandListener(repository);
@@ -44,7 +44,7 @@ class CommandListenerTest extends TestHelper {
 
         // GIVEN
         when(messageInfo.message()).thenReturn(getMessageContainer("/l"));
-        when(messageInfo.parentJid()).thenReturn(Jid.of("xxxxxxxxxxxxxxxxx@g.us"));
+        when(messageInfo.parentJid()).thenReturn(Jid.of("121212121212121212@g.us"));
         when(listCommand.itsMine(anyString())).thenReturn(true);
 
         var commandListener = new CommandListener(repository);

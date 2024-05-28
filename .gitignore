@@ -36,3 +36,6 @@ build/
 
 ### Maven ###
 /dependency-reduced-pom.xml
+
+### H2 Database ###
+*.db

@@ -1,15 +1,20 @@
 package dev.seariver.command;
 
 import dev.seariver.NewMessage;
+import dev.seariver.Repository;
 
 public class AddCommand implements Command {
 
+    private final Repository repository;
+
+    public AddCommand(Repository repository) {
+        this.repository = repository;
+    }
+
     @Override
-    public void execute(NewMessage event) {
+    public void execute(NewMessage newMessage) {
 
-        var response = "Received command: %s".formatted(event.text());
-
-        event.reply(response);
+        repository.addPersonOnNextEvent(newMessage);
     }
 
     @Override

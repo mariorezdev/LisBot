@@ -16,11 +16,11 @@ public class ListCommand implements Command {
     }
 
     @Override
-    public void execute(NewMessage newMessage) {
+    public void execute(NewMessage newMessage) { // todo: resolves template on repository
 
         newMessage.response("Sem eventos programados");
 
-        var nextEvent = repository.findNextEvent(newMessage.chatJid().toString());
+        var nextEvent = repository.findNextEvent(newMessage);
 
         nextEvent.ifPresent(event -> {
             var persons = repository.findPersonList(event.id());
@@ -31,6 +31,7 @@ public class ListCommand implements Command {
                 .collect(Collectors.joining("\n"));
 
             var response = event.template()
+                .replace("#ID", String.valueOf(event.id()))
                 .replace("#DATE", event.eventDate().format(DateTimeFormatter.ofPattern("dd/MM")))
                 .replace("#START_AT", event.startAt().format(DateTimeFormatter.ofPattern("HH'h'mm")))
                 .replace("#END_AT", event.endAt().format(DateTimeFormatter.ofPattern("HH'h'mm")))

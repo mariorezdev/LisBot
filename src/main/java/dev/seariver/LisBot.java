@@ -13,13 +13,17 @@ public class LisBot {
 
     public static void main(String[] args) {
 
-        var dataSource = JdbcConnectionPool.create("jdbc:h2:lisbot;MODE=PostgreSQL", "sa", "sa");
+        var url = "jdbc:h2:./lisbot;" +
+            "MODE=PostgreSQL;" +
+            "INIT=RUNSCRIPT FROM 'src/main/resources/01_initial_setup.sql'\\;";
+
+            var dataSource = JdbcConnectionPool.create(url, "sa", "sa");
         var repository = new Repository(dataSource);
 
         var commandListener = new CommandListener(repository);
         commandListener.addCommands(
             new ListCommand(repository),
-            new AddCommand()
+            new AddCommand(repository)
         );
 
         Whatsapp.webBuilder() // Use the Web api

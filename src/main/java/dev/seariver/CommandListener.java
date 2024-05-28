@@ -28,8 +28,9 @@ public class CommandListener implements Listener {
 
         var newMessage = new NewMessage(info);
 
+        // todo: cache registered chats
         if (newMessage.text().isEmpty() ||
-            !repository.isRegisteredChat(newMessage.chatJid().toString())) return;
+            !repository.isRegisteredChat(newMessage)) return;
 
         findCommand(newMessage.text())
             .ifPresent(command -> command.execute(newMessage));

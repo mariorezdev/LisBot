@@ -8,9 +8,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class Repository {
 
@@ -20,20 +25,54 @@ public class Repository {
         this.datasource = datasource;
     }
 
-    public void create() {
-        String sql = "INSERT INTO shortener (source_url, short_code) values (?, ?)";
+    public void addPersonOnNextEvent(NewMessage newMessage) {
 
-        try (Connection conn = datasource.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, "");
-            stmt.setString(2, "");
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        newMessage.reply("Sem eventos programados");
+
+        var nextEvent = findNextEvent(newMessage);
+
+        nextEvent.ifPresent(event -> {
+            var sql = """
+                INSERT INTO person 
+                (jid, event_id, name, created_at, updated_at) 
+                values (?, ?, ?, ?, ?)""";
+
+            try (Connection conn = datasource.getConnection();
+                 PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setString(1, newMessage.senderJid().toString());
+                stmt.setInt(2, event.id());
+                stmt.setString(3, newMessage.senderName());
+                stmt.setTimestamp(4, Timestamp.from(Instant.now()));
+                stmt.setTimestamp(5, Timestamp.from(Instant.now()));
+                stmt.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            var persons = findPersonList(event.id());
+
+            var personList = IntStream
+                .range(0, persons.size())
+                .mapToObj(i -> {
+                    var row = newMessage.senderJid().toString().equals(persons.get(i).jid())
+                        ? "**%02d - %s**"
+                        : "%02d - %s";
+                    return row.formatted(i + 1, persons.get(i).name());
+                })
+                .collect(Collectors.joining("\n"));
+
+            var response = event.template()
+                .replace("#ID", String.valueOf(event.id()))
+                .replace("#DATE", event.eventDate().format(DateTimeFormatter.ofPattern("dd/MM")))
+                .replace("#START_AT", event.startAt().format(DateTimeFormatter.ofPattern("HH'h'mm")))
+                .replace("#END_AT", event.endAt().format(DateTimeFormatter.ofPattern("HH'h'mm")))
+                .replace("#PERSON_LIST", personList);
+
+            newMessage.reply(response);
+        });
     }
 
-    public boolean isRegisteredChat(String chatJid) {
+    public boolean isRegisteredChat(NewMessage newMessage) {
 
         var result = false;
 
@@ -42,7 +81,7 @@ public class Repository {
         try (Connection conn = datasource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)
         ) {
-            stmt.setString(1, chatJid);
+            stmt.setString(1, newMessage.chatJid().toString());
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     result = true;
@@ -55,10 +94,11 @@ public class Repository {
         return result;
     }
 
-    public Optional<Event> findNextEvent(String chatJid) {
+    public Optional<Event> findNextEvent(NewMessage newMessage) {
 
         Optional<Event> result = Optional.empty();
 
+        // todo: limit and order by
         String sql = """
             SELECT
                 id,
@@ -74,7 +114,7 @@ public class Repository {
         try (Connection conn = datasource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)
         ) {
-            stmt.setString(1, chatJid);
+            stmt.setString(1, newMessage.chatJid().toString());
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     result = Optional.of(new Event(
@@ -104,7 +144,6 @@ public class Repository {
             SELECT
                 jid,
                 event_id,
-                phone_number,
                 name,
                 created_at,
                 updated_at
@@ -121,7 +160,6 @@ public class Repository {
                     result.add(new Person(
                         rs.getString("jid"),
                         rs.getInt("event_id"),
-                        rs.getString("phone_number"),
                         rs.getString("name"),
                         rs.getTimestamp("created_at").toLocalDateTime(),
                         rs.getTimestamp("updated_at").toLocalDateTime()

@@ -1,5 +1,6 @@
 package dev.seariver;
 
+import it.auties.whatsapp.model.info.ChatMessageInfo;
 import it.auties.whatsapp.model.info.MessageInfo;
 import it.auties.whatsapp.model.jid.Jid;
 import it.auties.whatsapp.model.message.standard.TextMessage;
@@ -31,16 +32,28 @@ public class NewMessage {
         return info.parentJid();
     }
 
+    public Jid senderJid() {
+        return info.senderJid();
+    }
+
+    public String senderName() {
+        if (info instanceof ChatMessageInfo chatMessageInfo) {
+            return chatMessageInfo.senderName();
+        }
+
+        return info.senderJid().user();
+    }
+
     public String response() {
         return response;
     }
 
-    public boolean reply() {
-        return reply;
-    }
-
     public void response(String text) {
         this.response = text;
+    }
+
+    public boolean reply() {
+        return reply;
     }
 
     public void reply(String text) {
