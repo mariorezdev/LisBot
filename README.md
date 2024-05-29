@@ -2,7 +2,7 @@
 
 ![lisbot.png](lisbot.png)
 
-Bot para organizar partidas Jogos de Tabuleiro em grupos de WhatsApp.
+Bot para organizar partidas de Jogos de Tabuleiro em grupos de WhatsApp.
 
 ## Comandos
 
