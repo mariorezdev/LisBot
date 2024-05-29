@@ -14,12 +14,11 @@ public class HelpCommand implements Command {
     @Override
     public void execute(NewMessage newMessage) {
         var response = """
-            Ola 🩵 Eu organizo sua Jogatina 🎲
+            Oi 🩵 Digite os comandos abaixo para:
 
-            Digite os comandos abaixo para:
-            > `/l` → *Lista* da próxima jogatina agendada.
-            > `/a` → *Adiciona* seu nome na próxima jogatina.
-            > `/h` → *Help* : exibe todos comandos disponíveis.""";
+            `/l` *L* ista da próxima jogatina.
+            `/a` *A* diciona seu nome na próxima jogatina.
+            `/h` *H* elp : exibe todos comandos disponíveis.""";
 
         newMessage.response(response);
     }

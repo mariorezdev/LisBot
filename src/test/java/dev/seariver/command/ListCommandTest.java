@@ -2,9 +2,6 @@ package dev.seariver.command;
 
 import dev.seariver.NewMessage;
 import dev.seariver.helper.TestHelper;
-import it.auties.whatsapp.model.info.ChatMessageInfoBuilder;
-import it.auties.whatsapp.model.jid.Jid;
-import it.auties.whatsapp.model.message.model.ChatMessageKeyBuilder;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -33,13 +30,12 @@ class ListCommandTest extends TestHelper {
     void GIVEN_list_command_WHEN_group_has_event_MUST_return_only_next_event() {
 
         // GIVEN
-        var chatMessageInfo = new ChatMessageInfoBuilder()
-            .key(new ChatMessageKeyBuilder()
-                .chatJid(Jid.of("111111111111111111@g.us"))
-                .build())
-            .senderJid(Jid.of("5511922222222:22@s.whatsapp.net"))
-            .message(getMessageContainer("/l"))
-            .build();
+        var chatMessageInfo = getChatMessageInfo(
+            "111111111111111111@g.us",
+            "5511922222222:22@s.whatsapp.net",
+            "Sicrana",
+            "/l"
+        );
         var newMessage = new NewMessage(chatMessageInfo);
 
         // WHEN
@@ -63,13 +59,12 @@ class ListCommandTest extends TestHelper {
     void GIVEN_chat_jid_WHEN_event_not_exist_MUST_return_no_event_message() {
 
         // GIVEN
-        var chatMessageInfo = new ChatMessageInfoBuilder()
-            .key(new ChatMessageKeyBuilder()
-                .chatJid(Jid.of("222222222222222222@g.us"))
-                .build())
-            .senderJid(Jid.of("5511912345678:12@s.whatsapp.net"))
-            .message(getMessageContainer("/l"))
-            .build();
+        var chatMessageInfo = getChatMessageInfo(
+            "222222222222222222@g.us",
+            "5511912345678:12@s.whatsapp.net",
+            "Someone",
+            "/l"
+        );
         var newMessage = new NewMessage(chatMessageInfo);
 
         // WHEN
@@ -84,13 +79,12 @@ class ListCommandTest extends TestHelper {
     void GIVEN_chat_jid_WHEN_has_event_WITH_no_people_MUST_return_empty_list() {
 
         // GIVEN
-        var chatMessageInfo = new ChatMessageInfoBuilder()
-            .key(new ChatMessageKeyBuilder()
-                .chatJid(Jid.of("333333333333333333@g.us"))
-                .build())
-            .senderJid(Jid.of("5511912345678:12@s.whatsapp.net"))
-            .message(getMessageContainer("/l"))
-            .build();
+        var chatMessageInfo = getChatMessageInfo(
+            "333333333333333333@g.us",
+            "5511912345678:12@s.whatsapp.net",
+            "Someone",
+            "/l"
+        );
         var newMessage = new NewMessage(chatMessageInfo);
 
         // WHEN
@@ -99,7 +93,7 @@ class ListCommandTest extends TestHelper {
 
         // THEN
         var expected = """
-            ID: 4 | *EVENTO SEM PESSOAS - #WEEK_DAY - #DATE* | Local: Na Rua | Horário: das 14h00 as 22h00
+            ID: 4 | *EVENTO NOVO - #WEEK_DAY - #DATE* | Local: Na Rua | Horário: das 14h00 as 22h00
             PESSOAS
             """
             .replace("#DATE", LocalDate.now().plusDays(2).format(DateTimeFormatter.ofPattern("dd/MM")))

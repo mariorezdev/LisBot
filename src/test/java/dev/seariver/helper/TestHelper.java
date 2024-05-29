@@ -1,6 +1,11 @@
 package dev.seariver.helper;
 
 import dev.seariver.Repository;
+import it.auties.whatsapp.model.contact.ContactBuilder;
+import it.auties.whatsapp.model.info.ChatMessageInfo;
+import it.auties.whatsapp.model.info.ChatMessageInfoBuilder;
+import it.auties.whatsapp.model.jid.Jid;
+import it.auties.whatsapp.model.message.model.ChatMessageKeyBuilder;
 import it.auties.whatsapp.model.message.model.MessageContainer;
 import it.auties.whatsapp.model.message.model.MessageContainerBuilder;
 import it.auties.whatsapp.model.message.standard.TextMessageBuilder;
@@ -21,6 +26,26 @@ public class TestHelper {
             "RUNSCRIPT FROM 'classpath:dataset.sql'\\;";
         var dataSource = JdbcConnectionPool.create(url, "sa", "sa");
         repository = new Repository(dataSource);
+    }
+
+    protected ChatMessageInfo getChatMessageInfo(String chatJid,
+                                                 String senderJid,
+                                                 String senderName,
+                                                 String text) {
+
+        var chatMessageInfo = new ChatMessageInfoBuilder()
+            .key(new ChatMessageKeyBuilder()
+                .chatJid(Jid.of(chatJid))
+                .build())
+            .senderJid(Jid.of(senderJid))
+            .message(getMessageContainer(text))
+            .build();
+        chatMessageInfo.setSender(new ContactBuilder()
+            .shortName(senderName)
+            .jid(Jid.of(senderJid))
+            .build());
+
+        return chatMessageInfo;
     }
 
     protected MessageContainer getMessageContainer(String text) {

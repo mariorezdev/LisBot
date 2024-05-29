@@ -11,7 +11,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -43,7 +42,7 @@ public class Repository {
         var personList = IntStream
             .range(0, persons.size())
             .mapToObj(i -> {
-                var row = newMessage.senderJid().toString().equals(persons.get(i).jid())
+                var row = newMessage.senderJid().toString().equals(persons.get(i).senderJid())
                     ? "*%02d - %s*"
                     : "%02d - %s";
                 return row.formatted(i + 1, persons.get(i).name());
@@ -63,7 +62,7 @@ public class Repository {
 
     public void addPersonOnNextEvent(NewMessage newMessage) {
 
-        newMessage.reply("Sem eventos programados");
+        newMessage.response("Sem eventos programados");
 
         var nextEvent = findNextEvent(newMessage);
 
@@ -73,16 +72,17 @@ public class Repository {
 
         var sql = """
             INSERT INTO person 
-            (jid, event_id, name, created_at, updated_at) 
-            values (?, ?, ?, ?, ?)""";
+            (event_id, sender_jid, slug, name, created_at, updated_at) 
+            values (?, ?, ?, ?, ?, ?)""";
 
         try (Connection conn = datasource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, newMessage.senderJid().toString());
-            stmt.setInt(2, event.id());
-            stmt.setString(3, newMessage.senderName());
-            stmt.setTimestamp(4, Timestamp.from(Instant.now()));
+            stmt.setInt(1, event.id());
+            stmt.setString(2, newMessage.senderJid().toString());
+            stmt.setString(3, Person.slugify(newMessage.senderName()));
+            stmt.setString(4, newMessage.senderName());
             stmt.setTimestamp(5, Timestamp.from(Instant.now()));
+            stmt.setTimestamp(6, Timestamp.from(Instant.now()));
             stmt.executeUpdate();
         } catch (JdbcSQLIntegrityConstraintViolationException e) {
             out.println(e.getMessage());
@@ -166,8 +166,10 @@ public class Repository {
 
         String sql = """
             SELECT
-                jid,
+                id,
                 event_id,
+                sender_jid,
+                slug,
                 name,
                 created_at,
                 updated_at
@@ -182,8 +184,10 @@ public class Repository {
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     result.add(new Person(
-                        rs.getString("jid"),
+                        rs.getInt("id"),
                         rs.getInt("event_id"),
+                        rs.getString("sender_jid"),
+                        rs.getString("slug"),
                         rs.getString("name"),
                         rs.getTimestamp("created_at").toLocalDateTime(),
                         rs.getTimestamp("updated_at").toLocalDateTime()
