@@ -31,4 +31,17 @@ public class TestHelper {
             .textMessage(textMessage)
             .build();
     }
+
+    protected String translateWeekDay(String weekDay) {
+        return switch (weekDay) {
+            case "MONDAY" -> "SEGUNDA";
+            case "TUESDAY" -> "TERÇA";
+            case "WEDNESDAY" -> "QUARTA";
+            case "THURSDAY" -> "QUINTA";
+            case "FRIDAY" -> "SEXTA";
+            case "SATURDAY" -> "SÁBADO";
+            case "SUNDAY" -> "DOMINGO";
+            default -> "";
+        };
+    }
 }

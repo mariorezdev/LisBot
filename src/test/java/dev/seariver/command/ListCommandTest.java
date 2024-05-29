@@ -48,20 +48,13 @@ class ListCommandTest extends TestHelper {
 
         // THEN
         var expected = """
-            ID: 3
-            *PRÓXIMA JOGATINA - SÁBADO - %s*
-            Local: Shopping Jardim Pamplona - Rua Pamplona, 1704 (Próximo ao metrô Trianon-Masp - são uns 15/20min a pé, não é colado) - 3° Andar, na frente do cinema
-            Horário: 14h00
-
+            ID: 2 | *PROXIMO EVENTO - #WEEK_DAY - #DATE* | Local: Na Rua | Horário: das 14h00 as 22h00
             PESSOAS
             01 - Fulana de Tal
             *02 - Sicrana*
-            03 - Beltrana
-
-            - Compre jogos na BoardGamePlay Store! Cupom de *5%* em todo o site: *JOGATINA*!
-            - Leve casaco! Às vezes o shopping fica *muito* gelado.
-            - Lembre-se de que o shopping fecha às 22h00!"""
-            .replace("%s", LocalDate.now().plusDays(2).format(DateTimeFormatter.ofPattern("dd/MM")));
+            03 - Beltrana"""
+            .replace("#DATE", LocalDate.now().plusDays(2).format(DateTimeFormatter.ofPattern("dd/MM")))
+            .replace("#WEEK_DAY", translateWeekDay(LocalDate.now().plusDays(2).getDayOfWeek().name()));
 
         assertThat(newMessage.response()).isEqualTo(expected);
     }
@@ -106,20 +99,12 @@ class ListCommandTest extends TestHelper {
 
         // THEN
         var expected = """
-            ID: 2
-            *PRÓXIMA JOGATINA - SÁBADO - %s*
-            Local: Shopping Jardim Pamplona - Rua Pamplona, 1704 (Próximo ao metrô Trianon-Masp - são uns 15/20min a pé, não é colado) - 3° Andar, na frente do cinema
-            Horário: 14h00
-
+            ID: 4 | *EVENTO SEM PESSOAS - #WEEK_DAY - #DATE* | Local: Na Rua | Horário: das 14h00 as 22h00
             PESSOAS
-
-
-            - Compre jogos na BoardGamePlay Store! Cupom de *5%* em todo o site: *JOGATINA*!
-            - Leve casaco! Às vezes o shopping fica *muito* gelado.
-            - Lembre-se de que o shopping fecha às 22h00!"""
-            .replace("%s", LocalDate.now().plusDays(2).format(DateTimeFormatter.ofPattern("dd/MM")));
+            """
+            .replace("#DATE", LocalDate.now().plusDays(2).format(DateTimeFormatter.ofPattern("dd/MM")))
+            .replace("#WEEK_DAY", translateWeekDay(LocalDate.now().plusDays(2).getDayOfWeek().name()));
 
         assertThat(newMessage.response()).isEqualTo(expected);
     }
 }
-

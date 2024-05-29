@@ -52,9 +52,10 @@ public class Repository {
 
         var response = event.template()
             .replace("#ID", String.valueOf(event.id()))
-            .replace("#DATE", event.eventDate().format(DateTimeFormatter.ofPattern("dd/MM")))
-            .replace("#START_AT", event.startAt().format(DateTimeFormatter.ofPattern("HH'h'mm")))
-            .replace("#END_AT", event.endAt().format(DateTimeFormatter.ofPattern("HH'h'mm")))
+            .replace("#WEEK_DAY", event.weekDay())
+            .replace("#DATE", event.date())
+            .replace("#START_AT", event.start())
+            .replace("#END_AT", event.end())
             .replace("#PERSON_LIST", personList);
 
         newMessage.response(response);
@@ -131,7 +132,7 @@ public class Repository {
             FROM event 
             WHERE chat_group_jid = ? 
             AND event_date >= CURRENT_DATE
-            ORDER BY event_date DESC
+            ORDER BY event_date ASC
             LIMIT 1""";
 
         try (Connection conn = datasource.getConnection();
