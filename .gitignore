@@ -39,3 +39,4 @@ build/
 
 ### H2 Database ###
 *.db
+/src/main/resources/dataset.sql
