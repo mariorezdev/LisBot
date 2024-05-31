@@ -37,11 +37,7 @@ public class CommandListener implements Listener {
 
         if (newMessage.response().isEmpty()) return;
 
-        if (newMessage.reply()) {
-            whatsapp.sendChatMessage(newMessage.chatJid(), newMessage.response(), info);
-        } else {
-            whatsapp.sendChatMessage(newMessage.chatJid(), newMessage.response());
-        }
+        whatsapp.sendChatMessage(newMessage.chatJid(), newMessage.response());
     }
 
     public void addCommands(Command... commands) {

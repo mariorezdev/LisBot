@@ -13,11 +13,38 @@ public class AddCommand implements Command {
 
     @Override
     public void execute(NewMessage newMessage) {
-        repository.addPersonOnNextEvent(newMessage);
+
+        var success = false;
+
+        var commandParams = newMessage
+            .text()
+            .substring(2)
+            .trim();
+
+        if (commandParams.isEmpty()) {
+            success = repository.addPersonOnNextEvent(newMessage, newMessage.senderName());
+            if (!success) return;
+            repository.listNextEvent(newMessage);
+            return;
+        }
+
+        var nameList = commandParams.split(",");
+
+        for (String name : nameList) {
+            newMessage.names(name.trim());
+            success = repository.addPersonOnNextEvent(newMessage, name.trim());
+            if (!success) break;
+        }
+
+        if (!success) return;
+
+        repository.listNextEvent(newMessage);
     }
 
     @Override
     public boolean itsMine(String text) {
-        return text.equalsIgnoreCase("/a");
+        return text
+            .substring(0, 2)
+            .equalsIgnoreCase("/a");
     }
 }

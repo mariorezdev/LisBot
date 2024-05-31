@@ -1,0 +1,22 @@
+version: '3.9'
+
+services:
+
+  postgres:
+    container_name: lisbot
+    image: postgres:16
+    restart: always
+    # set shared memory limit when using docker-compose
+    # shm_size: 128mb
+    network_mode: host
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: lisbot
+      POSTGRES_PASSWORD: lisbot
+      POSTGRES_DB: lisbot
+
+volumes:
+  postgres_data:

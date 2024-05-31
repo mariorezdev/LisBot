@@ -1,9 +1,9 @@
 package dev.seariver.model;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 public record Event(
     int id,
@@ -12,8 +12,7 @@ public record Event(
     LocalTime startAt,
     LocalTime endAt,
     String template,
-    LocalDateTime createdAt,
-    LocalDateTime updatedAt
+    List<Person> persons
 ) {
 
     public String weekDay() {

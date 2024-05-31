@@ -14,11 +14,17 @@ public class HelpCommand implements Command {
     @Override
     public void execute(NewMessage newMessage) {
         var response = """
-            Oi 🩵 Digite os comandos abaixo para:
+            Oi 🩵 Esses são os comandos mais usados:
 
             `/l` *L* ista da próxima jogatina.
-            `/a` *A* diciona seu nome na próxima jogatina.
-            `/h` *H* elp : exibe todos comandos disponíveis.""";
+            `/a` *A* diciona *seu nome* na próxima jogatina.
+            `/h` *H* elp : exibe todos comandos disponíveis.
+            
+            *ADICIONAR PESSOA*
+            `/a` *A* diciona *seu nome* na próxima jogatina.
+            `/a Ana Maria` *A* diciona *um nome* na próxima jogatina.
+            `/a Ana Maria, Clarice` *A* diciona *vários nomes* ao mesmo tempo.
+            """;
 
         newMessage.response(response);
     }

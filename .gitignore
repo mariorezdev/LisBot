@@ -39,4 +39,4 @@ build/
 
 ### H2 Database ###
 *.db
-/src/main/resources/dataset.sql
+/src/main/resources/db/migration/V002__load_data.sql

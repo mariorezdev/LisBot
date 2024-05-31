@@ -1,12 +1,15 @@
 package dev.seariver;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import dev.seariver.command.AddCommand;
 import dev.seariver.command.HelpCommand;
 import dev.seariver.command.ListCommand;
+import dev.seariver.lib.PropertyLoader;
 import it.auties.whatsapp.api.QrHandler;
 import it.auties.whatsapp.api.WebHistoryLength;
 import it.auties.whatsapp.api.Whatsapp;
-import org.h2.jdbcx.JdbcConnectionPool;
+import org.flywaydb.core.Flyway;
 
 import static java.lang.System.out;
 
@@ -14,13 +17,17 @@ public class LisBot {
 
     public static void main(String[] args) {
 
-        var url = "jdbc:h2:./lisbot;" +
-            "MODE=PostgreSQL;" +
-            "INIT=RUNSCRIPT FROM 'classpath:01_initial_setup.sql'\\;" +
-            "RUNSCRIPT FROM 'classpath:dataset.sql'\\;";
+        PropertyLoader.load();
 
+        var hikariConfig = new HikariConfig();
+        hikariConfig.setJdbcUrl(System.getProperty("jdbc.url"));
+        hikariConfig.setUsername(System.getProperty("jdbc.username"));
+        hikariConfig.setPassword(System.getProperty("jdbc.password"));
+        hikariConfig.setDriverClassName(System.getProperty("jdbc.driverClassName"));
+        var dataSource = new HikariDataSource(hikariConfig);
 
-        var dataSource = JdbcConnectionPool.create(url, "sa", "sa");
+        Flyway.configure().dataSource(dataSource).load().migrate();
+
         var repository = new Repository(dataSource);
 
         var commandListener = new CommandListener(repository);
