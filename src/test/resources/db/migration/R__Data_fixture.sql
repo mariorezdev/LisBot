@@ -26,8 +26,8 @@ PESSOAS
 ;
 
 -- PERSON #################################################
-INSERT INTO person(event_id, sender_jid, slug, name, created_at) values
-(-201, '5511911111111@s.whatsapp.net', 'fulana_de_tal', 'Fulana de Tal', '2024-03-01'),
-(-201, '5511922222222:22@s.whatsapp.net', 'sicrana',       'Sicrana', '2024-03-02'),
-(-201, '5511933333333:22@s.whatsapp.net', 'beltrana',      'Beltrana', '2024-03-03')
+INSERT INTO person(event_id, sender_phone, is_sender, slug, name, created_at) values
+(-201, '+5511911111111', true, 'fulana_de_tal', 'Fulana de Tal', '2024-03-01'),
+(-201, '+5511922222222', true, 'sicrana',       'Sicrana', '2024-03-02'),
+(-201, '+5511933333333', true, 'beltrana',      'Beltrana', '2024-03-03')
 ;

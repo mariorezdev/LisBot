@@ -82,4 +82,24 @@ class AddCommandProvidedNameTest extends DatabaseHelper {
 
         assertThat(newMessage.response()).isEqualTo(expected);
     }
+
+    @Test
+    void GIVEN_new_message_WHEN_add_more_than_10_person_MUST_respond_warning() {
+
+        // GIVEN
+        var chatMessageInfo = getChatMessageInfo(
+            "111111111111111111@g.us",
+            "55229112233445@s.whatsapp.net",
+            "Someone",
+            "/a Ana, Clarice, Bla, Cla, Dla, Fla, Ja, Ju, Cia, Deza, Onza"
+        );
+        var newMessage = new NewMessage(chatMessageInfo);
+
+        // WHEN
+        var addCommand = new AddCommand(repository);
+        addCommand.execute(newMessage);
+
+        // THEN
+        assertThat(newMessage.response()).isEqualTo("Perai 🖐️ Adicione 10 pessoas por vez.");
+    }
 }

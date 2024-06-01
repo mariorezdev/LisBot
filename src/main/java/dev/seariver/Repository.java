@@ -97,15 +97,16 @@ public class Repository {
 
         var sql = """
             INSERT INTO person 
-            (event_id, sender_jid, slug, name) 
-            values (?, ?, ?, ?)""";
+            (event_id, sender_phone, is_sender, slug, name) 
+            values (?, ?, ?, ?, ?)""";
 
         try (Connection conn = datasource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, event.id());
-            stmt.setString(2, newMessage.senderJid().toString());
-            stmt.setString(3, newMessage.slug(name));
-            stmt.setString(4, newMessage.normalize(name));
+            stmt.setString(2, newMessage.senderPhone());
+            stmt.setBoolean(3, newMessage.isSenderName());
+            stmt.setString(4, newMessage.slug(name));
+            stmt.setString(5, newMessage.normalize(name));
             stmt.executeUpdate();
         } catch (Exception e) {
             out.println(e.getMessage());
@@ -127,8 +128,9 @@ public class Repository {
                 e.end_at,
                 e.template,
                 p.id as person_id,
-                p.event_id as person_id,
-                p.sender_jid,
+                p.event_id as person_event_id,
+                p.sender_phone,
+                p.is_sender,
                 p.slug,
                 p.name
             from
@@ -152,8 +154,9 @@ public class Repository {
                     if (rs.getInt("person_id") != 0) {
                         persons.add(new Person(
                             rs.getInt("person_id"),
-                            rs.getInt("person_id"),
-                            rs.getString("sender_jid"),
+                            rs.getInt("person_event_id"),
+                            rs.getString("sender_phone"),
+                            rs.getBoolean("is_sender"),
                             rs.getString("slug"),
                             rs.getString("name")
                         ));

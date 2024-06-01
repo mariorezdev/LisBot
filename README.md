@@ -6,8 +6,22 @@ Bot para organizar partidas de Jogos de Tabuleiro em grupos de WhatsApp.
 
 ## Comandos
 
-`/l` → **Lista** da próxima jogatina.
+`/h` → **H**elp: exibe todos os comandos disponíveis.
 
-`/a` → **Adiciona** seu nome na próxima jogatina.
+### LISTAR JOGATINA
 
-`/h` → **Help**: exibe todos comandos disponíveis.
+`/l` → **L**ista da próxima jogatina.
+
+### ADICIONAR PESSOA
+
+`/a` → **A**diciona **seu nome** na próxima jogatina.
+
+`/a Ana Maria` → **A**diciona **um nome** na próxima jogatina.
+
+`/a Ana Maria, Clarice` → **A**diciona **vários nomes** ao mesmo tempo.
+
+### REMOVER PESSOA
+
+`/r` → **R**emove **seu nome** da próxima jogatina.
+
+`/r 3` → **R**emove a **pessoa** na posicao `3` (use `/l` para ver a posição)

@@ -14,6 +14,7 @@ public class NewMessage {
 
     private final MessageInfo info;
     private TextMessage textMessage;
+    private boolean isSenderName = false;
     private final Map<String, String> names = new HashMap<>();
     private String response = "";
 
@@ -63,6 +64,34 @@ public class NewMessage {
         return slug(senderName());
     }
 
+    public String senderPhone() {
+        return info.senderJid().toPhoneNumber();
+    }
+
+    public boolean isSenderName() {
+        return isSenderName;
+    }
+
+    public void isSenderName(boolean value) {
+        isSenderName = value;
+    }
+
+    public void names(String name) {
+        names.put(slug(name), normalize(name));
+    }
+
+    public Map<String, String> names() {
+        return names;
+    }
+
+    public String response() {
+        return response;
+    }
+
+    public void response(String text) {
+        this.response = text;
+    }
+
     public String normalize(String text) {
         // Normalize text
         var normalized = Normalizer.normalize(text, Normalizer.Form.NFKD);
@@ -87,21 +116,5 @@ public class NewMessage {
         slug = slug.replaceAll("^_+|_+$", "");
 
         return slug;
-    }
-
-    public String response() {
-        return response;
-    }
-
-    public void response(String text) {
-        this.response = text;
-    }
-
-    public void names(String name) {
-        names.put(slug(name), normalize(name));
-    }
-
-    public Map<String, String> names() {
-        return names;
     }
 }

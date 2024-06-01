@@ -22,6 +22,7 @@ public class AddCommand implements Command {
             .trim();
 
         if (commandParams.isEmpty()) {
+            newMessage.isSenderName(true);
             success = repository.addPersonOnNextEvent(newMessage, newMessage.senderName());
             if (!success) return;
             repository.listNextEvent(newMessage);
@@ -29,6 +30,11 @@ public class AddCommand implements Command {
         }
 
         var nameList = commandParams.split(",");
+
+        if (nameList.length > 10) {
+            newMessage.response("Perai 🖐️ Adicione 10 pessoas por vez.");
+            return;
+        }
 
         for (String name : nameList) {
             newMessage.names(name.trim());
