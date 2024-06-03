@@ -40,7 +40,7 @@ class ListCommandTest extends DatabaseHelper {
 
         // WHEN
         var listCommand = new ListCommand(repository);
-        listCommand.execute(newMessage);
+        listCommand.run(newMessage);
 
         // THEN
         var expected = """
@@ -69,7 +69,7 @@ class ListCommandTest extends DatabaseHelper {
 
         // WHEN
         var listCommand = new ListCommand(repository);
-        listCommand.execute(newMessage);
+        listCommand.run(newMessage);
 
         // THEN
         assertThat(newMessage.response()).isEqualTo("Sem eventos programados");
@@ -89,7 +89,7 @@ class ListCommandTest extends DatabaseHelper {
 
         // WHEN
         var listCommand = new ListCommand(repository);
-        listCommand.execute(newMessage);
+        listCommand.run(newMessage);
 
         // THEN
         var expected = """

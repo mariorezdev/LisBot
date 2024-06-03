@@ -22,6 +22,6 @@ Bot para organizar partidas de Jogos de Tabuleiro em grupos de WhatsApp.
 
 ### REMOVER PESSOA
 
-`/r` → **R**emove **seu nome** da próxima jogatina.
+`/r` → **R**emove **seu** nome da próxima jogatina.
 
-`/r 3` → **R**emove a **pessoa** na posicao `3` (use `/l` para ver a posição)
+`/r Clarice` → **R**emove **um** nome da próxima jogatina.

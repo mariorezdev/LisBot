@@ -32,7 +32,7 @@ public class AddCommand implements Command {
         var nameList = commandParams.split(",");
 
         if (nameList.length > 10) {
-            newMessage.response("Perai 🖐️ Adicione 10 pessoas por vez.");
+            newMessage.response("Perai ✋ Adicione 10 pessoas por vez.");
             return;
         }
 

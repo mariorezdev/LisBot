@@ -14,7 +14,7 @@ class NewMessageTest extends TestHelper {
         "Sicrana, Sicrana, sicrana",
         "Fulana de Tal, Fulana de Tal, fulana_de_tal",
         "𝓓𝓸𝓶𝓲 🪷 𝓓𝓸𝓶𝓲, Domi Domi, domi_domi",
-        "~ 🪷 🩵 !, '~ !', ''",
+        "~ 🪷 🩵 !, ' ', ''",
     })
     void name_placeholder(String senderName,
                           String normalizedName,

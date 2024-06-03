@@ -35,7 +35,7 @@ class CommandListenerTest extends DatabaseHelper {
         commandListener.onNewMessage(whatsapp, messageInfo);
 
         // THEN
-        verify(listCommand).execute(any(NewMessage.class));
+        verify(listCommand).run(any(NewMessage.class));
     }
 
     @Test
@@ -56,6 +56,6 @@ class CommandListenerTest extends DatabaseHelper {
         commandListener.onNewMessage(whatsapp, messageInfo);
 
         // THEN
-        verify(listCommand, never()).execute(any(NewMessage.class));
+        verify(listCommand, never()).run(any(NewMessage.class));
     }
 }

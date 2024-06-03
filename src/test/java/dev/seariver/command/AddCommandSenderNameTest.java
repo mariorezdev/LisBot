@@ -44,7 +44,7 @@ class AddCommandSenderNameTest extends DatabaseHelper {
 
         // WHEN
         var addCommand = new AddCommand(repository);
-        addCommand.execute(newMessage);
+        addCommand.run(newMessage);
 
         // THEN
         var expected = """
@@ -71,7 +71,7 @@ class AddCommandSenderNameTest extends DatabaseHelper {
 
         // WHEN
         var addCommand = new AddCommand(repository);
-        addCommand.execute(newMessage);
+        addCommand.run(newMessage);
 
         // THEN
         var expected = """
@@ -99,7 +99,7 @@ class AddCommandSenderNameTest extends DatabaseHelper {
 
         // WHEN
         var addCommand = new AddCommand(repository);
-        addCommand.execute(newMessage);
+        addCommand.run(newMessage);
 
         // THEN
         assertThat(newMessage.response()).isEqualTo(expected);

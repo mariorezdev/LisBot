@@ -33,7 +33,7 @@ public class CommandListener implements Listener {
             !repository.isRegisteredChat(newMessage)) return;
 
         findCommand(newMessage.text())
-            .ifPresent(command -> command.execute(newMessage));
+            .ifPresent(command -> command.run(newMessage));
 
         if (newMessage.response().isEmpty()) return;
 
@@ -47,7 +47,7 @@ public class CommandListener implements Listener {
     private Optional<Command> findCommand(String text) {
         return commands.stream()
             .filter(command -> command.itsMine(text))
-            .findAny();
+            .findFirst();
     }
 }
 

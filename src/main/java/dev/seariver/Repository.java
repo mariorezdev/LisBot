@@ -75,46 +75,6 @@ public class Repository {
         newMessage.response(response);
     }
 
-    public boolean addPersonOnNextEvent(NewMessage newMessage, String name) {
-
-        newMessage.response("Sem eventos programados");
-
-        var nextEvent = findNextEvent(newMessage);
-
-        if (nextEvent.isEmpty()) return false;
-
-        if (newMessage.slug(name).isEmpty()) {
-            newMessage.response("""
-                Desculpe 🥲 Nao consigo adicionar: %s
-
-                Tente desta forma:
-                `/a Nome` Troque a palavra `Nome` pelo nome que desejar.""".formatted(name));
-
-            return false;
-        }
-
-        var event = nextEvent.get();
-
-        var sql = """
-            INSERT INTO person 
-            (event_id, sender_phone, is_sender, slug, name) 
-            values (?, ?, ?, ?, ?)""";
-
-        try (Connection conn = datasource.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, event.id());
-            stmt.setString(2, newMessage.senderPhone());
-            stmt.setBoolean(3, newMessage.isSenderName());
-            stmt.setString(4, newMessage.slug(name));
-            stmt.setString(5, newMessage.normalize(name));
-            stmt.executeUpdate();
-        } catch (Exception e) {
-            out.println(e.getMessage());
-        }
-
-        return true;
-    }
-
     public Optional<Event> findNextEvent(NewMessage newMessage) {
 
         Optional<Event> result = Optional.empty();
@@ -178,5 +138,115 @@ public class Repository {
         }
 
         return result;
+    }
+
+    public boolean addPersonOnNextEvent(NewMessage newMessage, String name) {
+
+        newMessage.response("Sem eventos programados");
+
+        var nextEvent = findNextEvent(newMessage);
+
+        if (nextEvent.isEmpty()) return false;
+
+        if (newMessage.slug(name).isEmpty()) {
+            newMessage.response("""
+                Desculpe 🥲 Nao consigo adicionar: %s
+
+                Tente desta forma:
+                `/a Nome` Troque a palavra `Nome` pelo nome que desejar.""".formatted(name));
+
+            return false;
+        }
+
+        var event = nextEvent.get();
+
+        var sql = """
+            INSERT INTO person 
+            (event_id, sender_phone, is_sender, slug, name) 
+            values (?, ?, ?, ?, ?)""";
+
+        try (Connection conn = datasource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, event.id());
+            stmt.setString(2, newMessage.senderPhone());
+            stmt.setBoolean(3, newMessage.isSenderName());
+            stmt.setString(4, newMessage.slug(name));
+            stmt.setString(5, newMessage.normalize(name));
+            stmt.executeUpdate();
+        } catch (Exception e) {
+            out.println(e.getMessage());
+        }
+
+        return true;
+    }
+
+    public boolean removeSender(NewMessage newMessage) {
+
+        newMessage.response("Sem eventos programados");
+
+        var nextEvent = findNextEvent(newMessage);
+
+        if (nextEvent.isEmpty()) return false;
+
+        newMessage.response("Ops \uD83E\uDEE5 %s nao esta na lista"
+            .formatted(newMessage.senderNormalized()));
+
+        var event = nextEvent.get();
+
+        var optionalPerson = event.persons().stream()
+            .filter(p -> p.isSender() && p.senderPhone().equals(newMessage.senderPhone()))
+            .findFirst();
+
+        if (optionalPerson.isEmpty()) return false;
+
+        var sql = """
+            DELETE FROM person
+            WHERE id = %d;"""
+            .formatted(optionalPerson.get().id());
+
+        try (Connection conn = datasource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.executeUpdate();
+        } catch (Exception e) {
+            out.println(e.getMessage());
+        }
+
+        return true;
+    }
+
+    public boolean removeByName(NewMessage newMessage, String name) {
+
+        newMessage.response("Sem eventos programados");
+
+        var nextEvent = findNextEvent(newMessage);
+
+        if (nextEvent.isEmpty()) return false;
+
+        newMessage.response("Ops \uD83E\uDEE5 %s nao esta na lista"
+            .formatted(newMessage.senderNormalized()));
+
+        var event = nextEvent.get();
+
+        var optionalPerson = event.persons().stream()
+            .filter(p -> p.slug().equals(newMessage.slug(name)))
+            .findFirst();
+
+        if (optionalPerson.isEmpty()) return false;
+
+        var sql = """
+            DELETE FROM person
+            WHERE
+                event_id = %d AND
+                slug = '%s';"""
+            .formatted(event.id(), optionalPerson.get().slug());
+
+        try (Connection conn = datasource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.executeUpdate();
+        } catch (Exception e) {
+            out.println(e.getMessage());
+        }
+
+        return true;
     }
 }

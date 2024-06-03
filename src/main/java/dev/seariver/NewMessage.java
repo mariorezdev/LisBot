@@ -99,9 +99,12 @@ public class NewMessage {
         // Removes non ASCII chars
         var pattern = Pattern.compile("[^\\p{ASCII}]");
         var plainText = pattern.matcher(normalized).replaceAll("").trim();
+        // Removes non alfa-numeric
+        var cleanText = plainText.replaceAll("[^a-zA-Z\\s]", "");
 
         // Replace blank spaces
-        return plainText.replaceAll("\\s{2,}", " ");
+        return cleanText
+            .replaceAll("\\s{2,}", " ");
     }
 
     public String slug(String text) {
@@ -110,8 +113,8 @@ public class NewMessage {
 
         // remove accents
         var noAccents = lowerCased.replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
-        // replace non alfa-numeric
-        var slug = noAccents.replaceAll("[^\\p{Alnum}]+", "_");
+        // replace space by underscore
+        var slug = noAccents.replaceAll("\\s+", "_");
         // remove start and end underscore
         slug = slug.replaceAll("^_+|_+$", "");
 

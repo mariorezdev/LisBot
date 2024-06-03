@@ -39,7 +39,7 @@ class AddCommandProvidedNameTest extends DatabaseHelper {
 
         // WHEN
         var addCommand = new AddCommand(repository);
-        addCommand.execute(newMessage);
+        addCommand.run(newMessage);
 
         // THEN
         var expected = """
@@ -69,7 +69,7 @@ class AddCommandProvidedNameTest extends DatabaseHelper {
 
         // WHEN
         var addCommand = new AddCommand(repository);
-        addCommand.execute(newMessage);
+        addCommand.run(newMessage);
 
         // THEN
         var expected = """
@@ -97,9 +97,55 @@ class AddCommandProvidedNameTest extends DatabaseHelper {
 
         // WHEN
         var addCommand = new AddCommand(repository);
-        addCommand.execute(newMessage);
+        addCommand.run(newMessage);
 
         // THEN
-        assertThat(newMessage.response()).isEqualTo("Perai 🖐️ Adicione 10 pessoas por vez.");
+        assertThat(newMessage.response()).isEqualTo("Perai ✋ Adicione 10 pessoas por vez.");
+    }
+
+    @Test
+    void GIVEN_new_message_WHEN_adding_only_numbers_MUST_respond_warning() {
+
+        // GIVEN
+        var chatMessageInfo = getChatMessageInfo(
+            "111111111111111111@g.us",
+            "55229112233445@s.whatsapp.net",
+            "Someone",
+            "/a 06 123 _ 24"
+        );
+        var newMessage = new NewMessage(chatMessageInfo);
+
+        // WHEN
+        var addCommand = new AddCommand(repository);
+        addCommand.run(newMessage);
+
+        // THEN
+        assertThat(newMessage.response()).isEqualTo("""
+                Desculpe 🥲 Nao consigo adicionar: 06 123 _ 24
+
+                Tente desta forma:
+                `/a Nome` Troque a palavra `Nome` pelo nome que desejar.""");
+    }
+
+    @Test
+    void GIVEN_new_message_WHEN_adding_multi_line_MUST_respond_warning() {
+
+        // GIVEN
+        var chatMessageInfo = getChatMessageInfo(
+            "111111111111111111@g.us",
+            "55229112233445@s.whatsapp.net",
+            "Someone",
+            """
+                /a Nome
+                Sobrenome"""
+        );
+        var newMessage = new NewMessage(chatMessageInfo);
+
+        // WHEN
+        var addCommand = new AddCommand(repository);
+        addCommand.run(newMessage);
+
+        // THEN
+        assertThat(newMessage.response()).isEqualTo("Assim nao, ne \uD83E\uDD28");
     }
 }
