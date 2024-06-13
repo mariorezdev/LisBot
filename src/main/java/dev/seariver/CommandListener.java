@@ -7,7 +7,6 @@ import it.auties.whatsapp.model.info.MessageInfo;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 import static java.lang.System.out;
@@ -32,7 +31,9 @@ public class CommandListener implements Listener {
         if (newMessage.text().isEmpty() ||
             !repository.isRegisteredChat(newMessage)) return;
 
-        findCommand(newMessage.text())
+        commands.stream()
+            .filter(command -> command.itsMine(newMessage.text()))
+            .findFirst()
             .ifPresent(command -> command.run(newMessage));
 
         if (newMessage.response().isEmpty()) return;
@@ -43,11 +44,4 @@ public class CommandListener implements Listener {
     public void addCommands(Command... commands) {
         this.commands.addAll(Arrays.asList(commands));
     }
-
-    private Optional<Command> findCommand(String text) {
-        return commands.stream()
-            .filter(command -> command.itsMine(text))
-            .findFirst();
-    }
 }
-

@@ -45,6 +45,19 @@ public class DatabaseHelper extends TestHelper {
         repository = new Repository(dataSource);
     }
 
+    public static String translateWeekDay(String weekDay) {
+        return switch (weekDay) {
+            case "MONDAY" -> "SEGUNDA";
+            case "TUESDAY" -> "TERÇA";
+            case "WEDNESDAY" -> "QUARTA";
+            case "THURSDAY" -> "QUINTA";
+            case "FRIDAY" -> "SEXTA";
+            case "SATURDAY" -> "SÁBADO";
+            case "SUNDAY" -> "DOMINGO";
+            default -> "";
+        };
+    }
+
     @BeforeEach
     void cleanup() {
         var flyway = Flyway.configure()
@@ -82,18 +95,5 @@ public class DatabaseHelper extends TestHelper {
         return new MessageContainerBuilder()
             .textMessage(textMessage)
             .build();
-    }
-
-    public static String translateWeekDay(String weekDay) {
-        return switch (weekDay) {
-            case "MONDAY" -> "SEGUNDA";
-            case "TUESDAY" -> "TERÇA";
-            case "WEDNESDAY" -> "QUARTA";
-            case "THURSDAY" -> "QUINTA";
-            case "FRIDAY" -> "SEXTA";
-            case "SATURDAY" -> "SÁBADO";
-            case "SUNDAY" -> "DOMINGO";
-            default -> "";
-        };
     }
 }

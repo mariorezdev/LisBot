@@ -148,17 +148,26 @@ public class Repository {
 
         if (nextEvent.isEmpty()) return false;
 
-        if (newMessage.slug(name).isEmpty()) {
-            newMessage.response("""
-                Desculpe 🥲 Nao consigo adicionar: %s
-
-                Tente desta forma:
-                `/a Nome` Troque a palavra `Nome` pelo nome que desejar.""".formatted(name));
-
-            return false;
-        }
-
         var event = nextEvent.get();
+
+        var optionalPerson = event.persons().stream()
+            .filter(p -> p.slug().equals(newMessage.slug(name)))
+            .findFirst();
+
+        if (optionalPerson.isPresent()) {
+
+            if (optionalPerson.get().senderPhone().equals(newMessage.senderPhone())) {
+                return true;
+            }
+
+            newMessage.appendResponse("""
+                Alguém ja adicionou o nome *%s* 🤭
+
+                Use: `/a Nome Alternativo` para adicionar o nome que desejar."""
+                .formatted(newMessage.normalize(name)));
+
+            return true;
+        }
 
         var sql = """
             INSERT INTO person 
@@ -188,16 +197,24 @@ public class Repository {
 
         if (nextEvent.isEmpty()) return false;
 
-        newMessage.response("Ops \uD83E\uDEE5 %s nao esta na lista"
-            .formatted(newMessage.senderNormalized()));
-
         var event = nextEvent.get();
 
         var optionalPerson = event.persons().stream()
-            .filter(p -> p.isSender() && p.senderPhone().equals(newMessage.senderPhone()))
+            .filter(p -> p.slug().equals(newMessage.senderSlug()))
             .findFirst();
 
-        if (optionalPerson.isEmpty()) return false;
+        if (optionalPerson.isEmpty()) {
+            newMessage.appendResponse("Ops \uD83E\uDEE5 %s nao esta na lista"
+                .formatted(newMessage.senderNormalized()));
+            return true;
+        } else if (!optionalPerson.get().senderPhone().equals(newMessage.senderPhone())) {
+            newMessage.appendResponse("""
+                Não posso remover *%s*, pois não foi adicionado por voce.
+
+                Use: `/r %s` se ainda deseja remover este nome."""
+                .formatted(newMessage.senderNormalized(), newMessage.senderNormalized()));
+            return true;
+        }
 
         var sql = """
             DELETE FROM person

@@ -17,6 +17,7 @@ public class NewMessage {
     private boolean isSenderName = false;
     private final Map<String, String> names = new HashMap<>();
     private String response = "";
+    private String append = "";
 
     public NewMessage(MessageInfo info) {
         this.info = info;
@@ -27,6 +28,10 @@ public class NewMessage {
     }
 
     public String text() {
+
+        if (!stubTypeName().isEmpty()) {
+            return stubTypeName();
+        }
 
         if (null == textMessage) {
             return "";
@@ -84,7 +89,28 @@ public class NewMessage {
         return names;
     }
 
+    public String stubTypeName() {
+
+        var result = "";
+
+        if (info instanceof ChatMessageInfo chatMessageInfo) {
+            if (chatMessageInfo.stubType().isPresent()) {
+                result = chatMessageInfo.stubType().get().name();
+            }
+        }
+
+        return result;
+    }
+
     public String response() {
+
+        if (!append.isEmpty()) {
+            return append +
+                System.lineSeparator() +
+                System.lineSeparator() +
+                response;
+        }
+
         return response;
     }
 
@@ -92,18 +118,32 @@ public class NewMessage {
         this.response = text;
     }
 
+    public void appendResponse(String append) {
+        this.append = append;
+    }
+
     public String normalize(String text) {
+        return normalize(text, false);
+    }
+
+    public String normalize(String text, boolean allowNumbers) {
         // Normalize text
-        var normalized = Normalizer.normalize(text, Normalizer.Form.NFKD);
+        var result = Normalizer.normalize(text, Normalizer.Form.NFKD);
 
         // Removes non ASCII chars
         var pattern = Pattern.compile("[^\\p{ASCII}]");
-        var plainText = pattern.matcher(normalized).replaceAll("").trim();
-        // Removes non alfa-numeric
-        var cleanText = plainText.replaceAll("[^a-zA-Z\\s]", "");
+        result = pattern.matcher(result).replaceAll("").trim();
+
+        if (allowNumbers) {
+            // Removes non-alpha-numeric chars
+            result = result.replaceAll("[^\\p{Alnum}]+", "");
+        } else {
+            // Removes non-alphabetic chars
+            result = result.replaceAll("[^a-zA-Z\\s]", "");
+        }
 
         // Replace blank spaces
-        return cleanText
+        return result
             .replaceAll("\\s{2,}", " ");
     }
 

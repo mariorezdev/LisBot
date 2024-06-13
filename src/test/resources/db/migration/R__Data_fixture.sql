@@ -29,5 +29,5 @@ PESSOAS
 INSERT INTO person(event_id, sender_phone, is_sender, slug, name, created_at) values
 (-201, '+5511911111111', true, 'fulana_de_tal', 'Fulana de Tal', '2024-03-01'),
 (-201, '+5511922222222', true, 'sicrana',       'Sicrana', '2024-03-02'),
-(-201, '+5511933333333', true, 'beltrana',      'Beltrana', '2024-03-03')
+(-201, '+5511932132132', false, 'beltrana',     'Beltrana', '2024-03-03')
 ;

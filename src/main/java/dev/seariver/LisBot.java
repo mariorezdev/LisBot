@@ -6,6 +6,7 @@ import dev.seariver.command.AddCommand;
 import dev.seariver.command.HelpCommand;
 import dev.seariver.command.ListCommand;
 import dev.seariver.command.RemoveCommand;
+import dev.seariver.command.WelcomeCommand;
 import dev.seariver.lib.PropertyLoader;
 import it.auties.whatsapp.api.QrHandler;
 import it.auties.whatsapp.api.WebHistoryLength;
@@ -36,7 +37,8 @@ public class LisBot {
             new ListCommand(repository),
             new AddCommand(repository),
             new HelpCommand(repository),
-            new RemoveCommand(repository)
+            new RemoveCommand(repository),
+            new WelcomeCommand()
         );
 
         Whatsapp.webBuilder() // Use the Web api
